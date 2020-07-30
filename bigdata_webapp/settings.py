@@ -13,20 +13,20 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 import json
 
-with open('settings.json') as json_file:
-    SETTINGS_FILE = json.load(json_file)
-
-REDIS_SETTINGS = SETTINGS_FILE['redis']
-
+SETTINGS_DIR = os.path.dirname(os.path.realpath(__file__))
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+with open(os.path.join(SETTINGS_DIR, 'settings.json')) as json_file:
+    SETTINGS_FILE = json.load(json_file)
+
+REDIS_SETTINGS = SETTINGS_FILE['redis']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY =SETTINGS_FILE['secret_key']
+SECRET_KEY = SETTINGS_FILE['secret_key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
