@@ -16,6 +16,8 @@ import json
 with open('settings.json') as json_file:
     SETTINGS_FILE = json.load(json_file)
 
+REDIS_SETTINGS = SETTINGS_FILE['redis']
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
