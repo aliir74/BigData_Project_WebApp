@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from webapp.redis_interface import RedisInterface
 from django.http import HttpResponse
 
 
@@ -8,4 +9,12 @@ def index(request):
     :param request:
     :return:
     """
-    return render(request, 'webapp/index.html', {})
+    stats = {
+        'post_in_6hours': RedisInterface.get_post_in_6hours(user='test'),
+        'last_posts': RedisInterface.get_last_posts(),
+        'last_hashtags': RedisInterface.get_last_hashtags(),
+        'post_count_for_namad': RedisInterface.get_post_count_for_namad(namad='شکاپا'),
+        'post_in_1days': RedisInterface.get_post_in_1days(),
+        'unique_hashtags_in_1hours': RedisInterface.get_unique_hashtags_in_1hour()
+    }
+    return render(request, 'webapp/index.html', {'stats': stats})
