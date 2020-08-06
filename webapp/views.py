@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from webapp.redis_interface import RedisInterface
+from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
+import json
+
 
 
 def index(request):
@@ -18,3 +21,8 @@ def index(request):
         'unique_hashtags_in_1hours': RedisInterface.get_unique_hashtags_in_1hour()
     }
     return render(request, 'webapp/index.html', {'stats': stats})
+
+@require_http_methods(["POST"])
+def kafka_data(request):
+    print('POST:', json.loads(request.body))
+    return HttpResponse('OK')
