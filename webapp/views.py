@@ -22,7 +22,13 @@ def index(request):
     }
     return render(request, 'webapp/index.html', {'stats': stats})
 
-@require_http_methods(["POST"])
+@require_http_methods(["POST", "PUT"])
 def kafka_data(request):
-    print('POST:', json.loads(request.body))
+    #print(request.read())
+    try:
+        print(request.body.decode('utf-8'))
+        print('Kafka:', json.loads(request.body.decode('utf-8')))
+    except Exception as e:
+        print(str(e))
     return HttpResponse('OK')
+
