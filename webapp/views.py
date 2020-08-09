@@ -13,10 +13,10 @@ def index(request):
     :return:
     """
     stats = {
-        'post_in_6hours': RedisInterface.get_post_in_6hours(user='test'),
+        'post_in_6hours': RedisInterface.get_post_in_6hours(user='miyanaji'),
         'last_posts': RedisInterface.get_last_posts(),
         'last_hashtags': RedisInterface.get_last_hashtags(),
-        'post_count_for_namad': RedisInterface.get_post_count_for_namad(namad='شکاپا'),
+        'post_count_for_namad': RedisInterface.get_post_count_for_namad(namad='ذبگیلان'),
         'post_in_1days': RedisInterface.get_post_in_1days(),
         'unique_hashtags_in_1hours': RedisInterface.get_unique_hashtags_in_1hour()
     }
@@ -25,7 +25,7 @@ def index(request):
 @require_http_methods(["POST", "PUT"])
 def kafka_data(request):
     try:
-        tweet = request.body.decode('utf-8')
+        tweet = json.loads(request.body.decode('utf-8'))
         print('kafka:', tweet)
         RedisInterface.update_keys(tweet)
     except Exception as e:
