@@ -11,7 +11,7 @@ class RedisInterface:
     def get_post_in_6hours(user):
         ans = 0
         for i in range(6):
-            key = 'user${}${}'.format(user, (datetime.now()-timedelta(hours=i)).isoformat(timespec='hours'))
+            key = 'user${}${}'.format(user, (datetime.now() - timedelta(hours=i)).isoformat(timespec='hours'))
             ans += redis_client.get(key)
         return ans
 
@@ -73,7 +73,7 @@ class RedisInterface:
     def update_user_day_hour_key(username, time):
         key = 'user${}${}'.format(username, time.isoformat(timespec='hours'))
         old_value = redis_client.get(key) if redis_client.exists(key) else 0
-        redis_client.set(key, old_value+1, ex=7*24*60*60)  # expire after one week
+        redis_client.set(key, old_value + 1, ex=7 * 24 * 60 * 60)  # expire after one week
 
     @staticmethod
     def update_day_hour_key(time):
@@ -105,7 +105,6 @@ class RedisInterface:
             redis_client.set(key, old_value[:100], ex=7 * 24 * 60 * 60)  # expire after one week
         else:
             redis_client.set(key, [(content, time)], ex=7 * 24 * 60 * 60)  # expire after one week
-
 
     @staticmethod
     def update_last_hashtags_key(hashtags, time):
