@@ -24,10 +24,10 @@ def index(request):
 
 @require_http_methods(["POST", "PUT"])
 def kafka_data(request):
-    #print(request.read())
     try:
-        print(request.body.decode('utf-8'))
-        print('Kafka:', json.loads(request.body.decode('utf-8')))
+        tweet = request.body.decode('utf-8')
+        print('kafka:', tweet)
+        RedisInterface.update_keys(tweet)
     except Exception as e:
         print(str(e))
     return HttpResponse('OK')

@@ -11,7 +11,7 @@ class RedisInterface:
     def get_post_in_6hours(user):
         ans = 0
         for i in range(6):
-            key = '{}${}'.format(user, (datetime.now()-timedelta(hours=i)).isoformat(timespec='hours'))
+            key = 'user${}${}'.format(user, (datetime.now()-timedelta(hours=i)).isoformat(timespec='hours'))
             ans += redis_client.get(key)
         return ans
 
@@ -47,7 +47,7 @@ class RedisInterface:
         _6hour = 0
         _1hour = 0
         for i in range(24):
-            key = '{}${}'.format(namad, (datetime.now() - timedelta(hours=i)).isoformat(timespec='hours'))
+            key = 'hashtag${}${}'.format(namad, (datetime.now() - timedelta(hours=i)).isoformat(timespec='hours'))
             value = redis_client.get(key)
             if i == 0:
                 _1hour = value
@@ -58,38 +58,62 @@ class RedisInterface:
         return {1: _1hour, 6: _6hour, 24: _24hour}
 
     @staticmethod
-    def update_keys(post):
-        RedisInterface.update_user_day_hour_key()
-        RedisInterface.update_day_hour_key()
-        RedisInterface.update_hashtag_day_hour_key()
-        RedisInterface.update_count_hashtag_day_hour_key()
-        RedisInterface.update_last_posts_key()
-        RedisInterface.update_last_hashtags_key()
+    def update_keys(tweet):
+        username = tweet.get('username', '')
+        hashtags = tweet.get('hashtags', [])
+        content = tweet.get('content', '')
+        time = datetime.strptime(tweet.get('sendTime'), '%Y-%m-%dT%H:%M:%SZ')
+        RedisInterface.update_user_day_hour_key(username, time)
+        RedisInterface.update_day_hour_key(time)
+        RedisInterface.update_count_hashtag_day_hour_key(hashtags, time)
+        RedisInterface.update_last_posts_key(content, time)
+        RedisInterface.update_last_hashtags_key(hashtags, time)
 
     @staticmethod
-    def update_user_day_hour_key():
-        pass
+    def update_user_day_hour_key(username, time):
+        key = 'user${}${}'.format(username, time.isoformat(timespec='hours'))
+        old_value = redis_client.get(key) if redis_client.exists(key) else 0
+        redis_client.set(key, old_value+1, ex=7*24*60*60)  # expire after one week
 
     @staticmethod
-    def update_day_hour_key():
-        pass
+    def update_day_hour_key(time):
+        key = 'post${}'.format(time.isoformat(timespec='hours'))
+        old_value = redis_client.get(key) if redis_client.exists(key) else 0
+        redis_client.set(key, old_value + 1, ex=7 * 24 * 60 * 60)  # expire after one week
 
     @staticmethod
-    def update_hashtag_day_hour_key():
-        pass
+    def update_count_hashtag_day_hour_key(hashtags, time):
+        cnt = 0
+        for hashtag in hashtags:
+            key = 'hashtag${}${}'.format(hashtag, time.isoformat(timespec='hours'))
+            old_value = redis_client.get(key) if redis_client.exists(key) else 0
+            redis_client.set(key, old_value + 1, ex=7 * 24 * 60 * 60)  # expire after one week
+
+            if old_value == 0:
+                cnt += 1
+        cnt_key = 'cnt$hashtags${}'.format(time.isoformat(timespec='hours'))
+        old_cnt_value = redis_client.get(cnt_key) if redis_client.exists(cnt_key) else 0
+        redis_client.set(cnt_key, old_cnt_value + cnt, ex=7 * 24 * 60 * 60)  # expire after one week
 
     @staticmethod
-    def update_count_hashtag_day_hour_key():
-        pass
+    def update_last_posts_key(content, time):
+        key = 'last$posts'
+        if redis_client.exists(key):
+            old_value = redis_client.get(key)
+            old_value.append((content, time))
+            old_value.sort(key=lambda x: x[1], reverse=True)
+            redis_client.set(key, old_value[:100], ex=7 * 24 * 60 * 60)  # expire after one week
+        else:
+            redis_client.set(key, [(content, time)], ex=7 * 24 * 60 * 60)  # expire after one week
+
 
     @staticmethod
-    def update_last_posts_key():
-        pass
-
-    @staticmethod
-    def update_last_hashtags_key():
-        pass
-
-    @staticmethod
-    def update_namad_day_hour_key():
-        pass
+    def update_last_hashtags_key(hashtags, time):
+        key = 'last$hashtags'
+        if redis_client.exists(key):
+            old_value = redis_client.get(key)
+            old_value.extend([(h, time) for h in hashtags])
+            old_value.sort(key=lambda x: x[1], reverse=True)
+            redis_client.set(key, old_value[:1000], ex=7 * 24 * 60 * 60)  # expire after one week
+        else:
+            redis_client.set(key, [(h, time) for h in hashtags], ex=7 * 24 * 60 * 60)  # expire after one week
