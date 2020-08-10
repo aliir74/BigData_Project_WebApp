@@ -4,8 +4,7 @@ from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
 import json
 
-
-
+@require_http_methods(["GET"])
 def index(request):
     """
     This view if for show redis stats to user
@@ -13,10 +12,10 @@ def index(request):
     :return:
     """
     stats = {
-        'post_in_6hours': RedisInterface.get_post_in_6hours(user='miyanaji'),
+        'post_in_6hours': RedisInterface.get_post_in_6hours(user=request.GET.get('user', 'miyanaji')),
         'last_posts': RedisInterface.get_last_posts(),
         'last_hashtags': RedisInterface.get_last_hashtags(),
-        'post_count_for_namad': RedisInterface.get_post_count_for_namad(namad='ذبگیلان'),
+        'post_count_for_namad': RedisInterface.get_post_count_for_namad(namad=request.GET.get('namad', 'ذبگیلان')),
         'post_in_1days': RedisInterface.get_post_in_1days(),
         'unique_hashtags_in_1hours': RedisInterface.get_unique_hashtags_in_1hour()
     }
