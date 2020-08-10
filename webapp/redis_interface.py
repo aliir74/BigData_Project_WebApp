@@ -73,7 +73,7 @@ class RedisInterface:
 
     @staticmethod
     def update_keys(tweet):
-        username = tweet.get('sendUsername', '')
+        username = tweet.get('senderUsername', '')
         hashtags = tweet.get('hashtags', [])
         content = tweet.get('content', '')
         time = datetime.strptime(tweet.get('sendTime'), '%Y-%m-%dT%H:%M:%SZ')
