@@ -6,6 +6,19 @@ import json
 redis_client = redis.Redis(host=settings.REDIS_SETTINGS['host'], port=settings.REDIS_SETTINGS['port'])
 
 
+def remove_duplicates(l):
+    hash_map = {}
+    duplicate_list = [False for i in l]
+    for i in range(len(l)):
+        key = l[i][0]
+        if key in hash_map.keys():
+            duplicate_list[i] = True
+        else:
+            hash_map[key] = 1
+    for i in range(len(l)-1, -1, -1):
+        if duplicate_list[i]:
+            del l[i]
+
 class RedisInterface:
 
     @staticmethod
@@ -117,6 +130,7 @@ class RedisInterface:
             old_value = json.loads(redis_client.get(key).decode())
             old_value['key'].extend([[h, time.isoformat()] for h in hashtags])
             old_value['key'].sort(key=lambda x: x[1], reverse=True)
+            remove_duplicates(old_value['key'])
             old_value['key'] = old_value['key'][:1000]
             redis_client.set(key, json.dumps(old_value), ex=7 * 24 * 60 * 60)  # expire after one week
         else:
