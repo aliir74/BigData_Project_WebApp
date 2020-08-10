@@ -2,19 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <title>Statistics</title>
 </head>
 <body>
-{{ stats.post_in_6hours }}
-<hr>
-{{ stats.last_posts }}
-<hr>
-{{ stats.last_hashtags }}
-<hr>
-{{ stats.post_count_for_namad }}
-<hr>
-{{ stats.post_in_1days }}
-<hr>
-{{ stats.unique_hashtags_in_1hours }}
+    <div class="container text-center" dir="rtl">
+        <hr>
+        <div class="row">
+            <div class="col-6"><b>تعداد پست‌های کاربر {{ user }} در ۶ ساعت گذشته</b></div>
+            <div class="col-6">
+                {{ stats.post_in_6hours }}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-6"><b>تعداد پست‌های نماد {{ namad }} در ۱، ۶ و ۲۴ ساعت گذشته</b></div>
+            <div class="col-2">{{ stats.post_count_for_namad.1 }}</div>
+            <div class="col-2">{{ stats.post_count_for_namad.6 }}</div>
+            <div class="col-2">{{ stats.post_count_for_namad.24 }}</div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-6"><b>تعداد پست‌های ۱ روز گذشته</b></div>
+            <div class="col-6">
+                {{ stats.post_in_1days }}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-6"><b>تعداد هشتگ‌های منحصر به فرد وارد شده در یک روز گذشته</b></div>
+            <div class="col-6">
+                {{ stats.unique_hashtags_in_1hours }}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-6" style="margin: auto;"><b>۱۰۰۰ هشتگ اخیر استفاده شده</b></div>
+            <div class="col-6">
+                <div class="row">
+                    {% for hashtag in stats.last_hashtags %}
+                        <div class="col">
+                            {{ hashtag }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-6" style="margin: auto;">
+                <b>۱۰۰ پست اخیر</b>
+            </div>
+            <div class="col-6">
+                {% for post in stats.last_posts %}
+                    <div class="row">
+                            {{ post }}
+                    </div>
+                    <hr>
+                {% endfor %}
+            </div>
+        </div>
+        <hr>
+    </div>
 </body>
 </html>
