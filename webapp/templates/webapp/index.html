@@ -9,14 +9,14 @@
     <div class="container text-center" dir="rtl">
         <hr>
         <div class="row">
-            <div class="col-6"><b>تعداد پست‌های کاربر {{ user }} در ۶ ساعت گذشته</b></div>
+            <div class="col-6"><b>تعداد پست‌های کاربر <span style="color: red">{{ user }} </span> در ۶ ساعت گذشته</b></div>
             <div class="col-6">
                 {{ stats.post_in_6hours }}
             </div>
         </div>
         <hr>
         <div class="row">
-            <div class="col-6"><b>تعداد پست‌های نماد {{ namad }} در ۱، ۶ و ۲۴ ساعت گذشته</b></div>
+            <div class="col-6"><b>تعداد پست‌های نماد <span style="color: red">{{ namad }} </span>  در ۱، ۶ و ۲۴ ساعت گذشته</b></div>
             <div class="col-2">{{ stats.post_count_for_namad.1 }}</div>
             <div class="col-2">{{ stats.post_count_for_namad.6 }}</div>
             <div class="col-2">{{ stats.post_count_for_namad.24 }}</div>
