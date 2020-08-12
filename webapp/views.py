@@ -3,6 +3,7 @@ from webapp.redis_interface import RedisInterface
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
 import json
+from webapp.utils import fix_json_format
 
 @require_http_methods(["GET"])
 def index(request):
@@ -27,6 +28,7 @@ def index(request):
 def kafka_data(request):
     try:
         tweet = json.loads(request.body.decode('utf-8'))
+        tweet = fix_json_format(tweet)
         print('kafka:', tweet)
         RedisInterface.update_keys(tweet)
     except Exception as e:
