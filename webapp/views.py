@@ -13,7 +13,7 @@ def index(request):
     :param request:
     :return:
     """
-    user = request.GET.get('user', 'oghab2')
+    user = request.GET.get('user', 'faradanesh')
     namad = request.GET.get('namad', 'شپنا')
     stats = {
         'post_in_6hours': RedisInterface.get_post_in_6hours(user=user),
