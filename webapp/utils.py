@@ -7,6 +7,7 @@ def fix_json_format(tweet):
     # print(tweet['hashtags'])
     tweet['id'] = int(tweet['id'])
     tweet['sendTimeUNIX'] = int(tweet['sendTimeUNIX'].replace('\n', ''))
+    tweet['sendUsername'] = tweet['username']
     del tweet['Hashtags']
     keywords = ['بورس', 'اقتصاد', 'تحریم', 'دولت', 'دلار', 'طلا', 'کرونا', 'شاخص بورس', 'تورم', 'دانشگاه', 'سقوط',
                 'رشد']
