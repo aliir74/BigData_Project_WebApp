@@ -30,10 +30,11 @@ def index(request):
 def kafka_data(request):
     try:
         tweet = json.loads(request.body.decode('utf-8'))
-        tweet = fix_json_format(tweet)
-        print('kafka:', tweet)
-        RedisInterface.update_keys(tweet)
-        send_tweet_to_kafka(tweet)
+        if not RedisInterface.duplicate_id(tweet['id']):
+            tweet = fix_json_format(tweet)
+            print('kafka:', tweet)
+            RedisInterface.update_keys(tweet)
+            send_tweet_to_kafka(tweet)
     except Exception as e:
         print(str(e))
     return HttpResponse('OK')

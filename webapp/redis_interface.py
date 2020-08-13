@@ -15,11 +15,24 @@ def remove_duplicates(l):
             duplicate_list[i] = True
         else:
             hash_map[key] = 1
-    for i in range(len(l)-1, -1, -1):
+    for i in range(len(l) - 1, -1, -1):
         if duplicate_list[i]:
             del l[i]
 
+
 class RedisInterface:
+
+    @staticmethod
+    def duplicate_id(id):
+        if redis_client.exists(id):
+            return True
+        redis_client.set(id, 'id')
+        if redis_client.exists('duplicate_cnt'):
+            old_value = int(redis_client.get('duplicate_cnt').decode())
+        else:
+            old_value = 0
+        redis_client.set('duplicate_id', old_value+1)
+        return False
 
     @staticmethod
     def get_post_in_6hours(user):
