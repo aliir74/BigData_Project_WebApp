@@ -29,7 +29,7 @@ class RedisInterface:
                 old_value = int(redis_client.get('duplicate_cnt').decode())
             else:
                 old_value = 0
-            redis_client.set('duplicate_id', old_value + 1)
+            redis_client.set('duplicate_cnt', old_value + 1)
             return True
         redis_client.set(id, 'id')
         return False
