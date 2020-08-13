@@ -2,10 +2,9 @@ from django.shortcuts import render
 from webapp.redis_interface import RedisInterface
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
-from django.conf import settings
-from webapp.utils import fix_json_format
+from webapp.utils import fix_json_format, send_tweet_to_kafka
 import json
-import requests
+
 
 @require_http_methods(["GET"])
 def index(request):
@@ -26,6 +25,7 @@ def index(request):
     }
     return render(request, 'webapp/index.html', {'stats': stats, 'user': user, 'namad': namad})
 
+
 @require_http_methods(["POST", "PUT"])
 def kafka_data(request):
     try:
@@ -33,9 +33,7 @@ def kafka_data(request):
         tweet = fix_json_format(tweet)
         print('kafka:', tweet)
         RedisInterface.update_keys(tweet)
-        res = requests.post(settings.ELASTIC_KAFKA_URL, data=json.dumps(tweet))
-        print('kafka elastic', res.text)
+        send_tweet_to_kafka(tweet)
     except Exception as e:
         print(str(e))
     return HttpResponse('OK')
-
