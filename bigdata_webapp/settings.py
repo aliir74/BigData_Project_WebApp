@@ -31,7 +31,7 @@ SECRET_KEY = SETTINGS_FILE['secret_key']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['45.156.185.207']
+ALLOWED_HOSTS = ['localhost', '45.156.185.207']
 
 
 # Application definition
